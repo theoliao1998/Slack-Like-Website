@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="css/html5reset.css">
+    <link rel="stylesheet" type="text/css" href="css/style.css"> 
+    <link rel="stylesheet" type="text/css" href="css/form.css"> 
+    <script src="https://kit.fontawesome.com/0fca72bfa2.js" crossorigin="anonymous"></script>
+    <title>Home</title>
+  </head>
+  <body>
+        <div class="parent"> 
+            <div class="side">
+                <h2>Home</h2>
+                <div class="user"><i class="far fa-user"></i>
+                  User Name
+                 </div>
+                <div><div class="active">Workspaces <i class="fas fa-plus-circle"></i></div>
+                  <ul>
+                    <li>&#x25cb; Workspace1 </li>
+                    <li>&#x25cf; Workspace2 </li>
+                    
+                  </ul>
+                </div>
+
+            </div> 
+            <div class="topnav"> 
+                <a class="active" href="#home">Home</a>
+                
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search..">
+            </div> 
+            <div class="content">
+              <h1 style="font-size: 130%;">Current Workspaces</h1>
+              <div class="message"> 
+                <div class="user-icon" id="user1"></div>
+                <div class="message-content"> 
+                  <div class="user-name">Workspace1 <span class="released-time">Created on 2019/11/14</span> </div>
+                  <div>Description.</div> 
+                </div>
+              </div>
+              <div class="message"> 
+                  <div class="user-icon" id="user1"></div>
+                  <div class="message-content"> 
+                    <div class="user-name">Workspace2 <span class="released-time">Created on 2019/11/14</span> </div>
+                    <div>Description.</div> 
+                  </div>
+                </div>
+              </div>
+          
+            <div class="thread"> 
+              <div id = "thread-head" >Create a workspace <i class="fas fa-window-close"></i>
+              <div style="font-size: 80%; color: grey;">
+                  Workspaces have channels where members can communicate.
+              </div>
+            </div>
+              <form class="form-horizontal" action="https://formspree.io/xpzabang" method="post">
+                <fieldset>
+                    <legend class="text-center header"> </legend>
+                    
+                    <div class="form-group">
+                        <label for="fname" ><span aria-label="Name" style="font-size:120%;">Name</span></label>
+                        <div>
+                            <input name="name" type="text" placeholder="Name" class="form-control">
+                        </div>
+                    </div>
+  
+                    <div class="form-group">
+                        <label for="message"><span aria-label="Description" style="font-size:120%;">Description</span></label>
+                        <div>
+                            <textarea class="form-control" name="description" placeholder="Optional"></textarea>
+                        </div>
+                    </div>
+  
+                    <div class="form-group" id="submit">
+                        <div>
+                            <button type="submit" class="btn btn-primary btn-lg">Create</button>
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+            </div>
+
+        <div id="send" >
+            <i class="fas fa-paperclip attachIcon"></i>
+            <input class="sendBox" type="text" name="send" placeholder="Message to send in every channel of chosen workspaces">
+            <input type="submit" value="Send" class="sendButton">
+        </div>
+
+  </body>
+  
+</html>

@@ -20,7 +20,7 @@ from django.conf.urls import url
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [
-    path('', include('home.urls')),
+    path('', include('workspaces.urls')),
     path('admin/', admin.site.urls),
     path('accounts/', include('django.contrib.auth.urls')),  # Keep
     url(r'^oauth/', include('social_django.urls', namespace='social')),  # Keep
@@ -34,6 +34,24 @@ urlpatterns += [
     path('favicon.ico', serve, {
             'path': 'favicon.ico',
             'document_root': os.path.join(BASE_DIR, 'home/static'),
+        }
+    ),
+]
+
+urlpatterns += [
+    path('css/html5reset.css', serve, {
+            'path': 'css/html5reset.css',
+            'document_root': os.path.join(BASE_DIR, 'home/static/'),
+        }
+    ),
+    path('css/style.css', serve, {
+            'path': 'css/style.css',
+            'document_root': os.path.join(BASE_DIR, 'home/static/'),
+        }
+    ),
+    path('css/form.css', serve, {
+            'path': 'css/form.css',
+            'document_root': os.path.join(BASE_DIR, 'home/static/'),
         }
     ),
 ]

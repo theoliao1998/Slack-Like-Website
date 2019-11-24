@@ -1,0 +1,68 @@
+{% extends "base_temp.html" %}
+{% load crispy_forms_tags %}
+{% block workspace_name %}
+<h2>Home</h2>
+{% endblock %}
+
+{% block side %}
+<div><div class="active"><a style="text-decoration: none; color: white;" href="{% url 'workspaces:all' %}"> Workspaces <i class="fas fa-plus-circle"></i> </a></div>
+
+<ul>
+  {% for workspace in workspace_list %}
+    <li class="check">
+        &#x25cb;<a style="text-decoration: none; color: white;" href="">{{ workspace.name }}</a>
+        </p>
+    </li>
+  {% endfor %}
+</ul>
+
+
+</div>
+{% endblock %}
+
+{% block nav %}
+<a class="active" href="">Home</a>
+{% endblock %}
+
+{% block content %}
+
+<h1 style="font-size: 130%;">Current Workspaces</h1>
+{% for workspace in workspace_list %}
+    <div class="message">
+        <div class="user-icon">{{ workspace.name|slice:":1" }}</div>
+        <div class="message-content">
+            <div class="user-name"><strong>{{ workspace.name }}</strong><span class="released-time"> Created on {{ workspace.created_at | date:"d-m-Y"}}</span> </div>
+            <div>{{ workspace.description }}</div>
+        </div>
+        <div>
+            <a href="{% url 'workspaces:workspace_delete' workspace.id %}"> <i style="margin: 0.5vw 0.1vw;float:none; color: grey;" class="fas fa-trash-alt fa-lg"></i> </a>
+            {% if user == workspace.owner %}
+            <a href="{% url 'workspaces:workspace_update' workspace.id %}"> <i style="margin: 0.5vw 0.1vw;float:none; color: grey;" class="fas fa-edit fa-lg"></i> </a>
+            {% endif %}
+        </div>
+    </div>
+{% endfor %}
+
+{% endblock %}
+
+{% block right %}
+<div id='create'>
+<div id = "thread-head" >Create a workspace
+              <div style="font-size: 80%; color: grey;">
+                  Workspaces have channels where members can communicate.
+              </div>
+            </div>
+              <form action="" method="post" id="upload_form" enctype="multipart/form-data" class="form-horizontal">
+                <fieldset>
+                    <legend class="text-center header"> </legend>
+                </fieldset>
+                {% csrf_token %}
+                {{ form|crispy }}
+                <div class="form-group" id="submit">
+                        <div>
+                            <button type="submit" class="btn btn-primary btn-lg">Create</button>
+                        </div>
+                </div>
+            </form>
+</div>
+{% endblock %}

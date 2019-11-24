@@ -1,0 +1,36 @@
+.form-horizontal{
+  /* text-align: center; */
+  margin-left: 1vw;
+}
+
+
+#submit{
+  display: inline-block;
+}
+
+.submit{
+  background: black;
+}
+
+.header {
+    color: #36A0FF;
+    font-size: 27px;
+    padding: 10px;
+}
+
+.bigicon {
+    font-size: 35px;
+    color: #36A0FF;
+    padding-left:2%;
+}
+form div{
+    display:inline-block;
+    width: 97%;
+}
+button.btn{
+    display: block;
+    margin: 0 auto;
+    background: #38597c;
+}
+
+

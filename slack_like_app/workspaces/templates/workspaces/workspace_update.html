@@ -1,0 +1,23 @@
+{% extends "workspaces/home_list.html" %}
+{% load crispy_forms_tags %}
+{% block right %}
+<div id = "thread-head" >
+Update Workspace
+<div style="font-size: 80%; color: grey;">
+As the owner of the workspace <strong> {{ workspace }} </strong>, you can update the name and the description of this workspace.
+</div>
+<form action="" method="post" id="upload_form" enctype="multipart/form-data" class="form-horizontal">
+                <fieldset>
+                    <legend class="text-center header"> </legend>
+                </fieldset>
+                {% csrf_token %}
+                {{ form|crispy }}
+                <div class="form-group" id="submit">
+                        <div>
+                            <button type="submit" class="btn btn-primary btn-lg">Create</button>
+                        </div>
+                </div>
+            </form>
+
+</div>
+{% endblock %}

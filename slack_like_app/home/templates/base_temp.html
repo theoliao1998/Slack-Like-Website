@@ -1,0 +1,58 @@
+{% load app_tags %}
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="https://theoliao.pythonanywhere.com/css/html5reset.css">
+    <link rel="stylesheet" type="text/css" href="https://theoliao.pythonanywhere.com/css/style.css">
+    <link rel="stylesheet" type="text/css" href="https://theoliao.pythonanywhere.com/css/form.css">
+    <script src="https://kit.fontawesome.com/0fca72bfa2.js" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js" crossorigin="anonymous"></script>
+    <title>{% block title %}{{ settings.APP_NAME }}{% endblock %}</title>
+  </head>
+  <body>
+        <div class="parent">
+            <div class="side">
+              {% block workspace_name %} {% endblock %}
+              {% if user.is_authenticated %}
+                    <div> {{ user.get_username }} <img style="width: 25px; float: right;" src="{{ user|gravatar:60 }}"/></div>
+                    <div class="check"> <a style="text-decoration: none; color: white;" href="{% url 'logout' %}?next={% url 'workspaces:all' %}"><i class="fas fa-key"></i>Logout</a></div>
+                {% else %}
+                    <div class="check"> <a style="text-decoration: none; color: white;" href="{% url 'login' %}?next={% url 'workspaces:all' %}"><i class="fas fa-key"></i>Login</a></div>
+                {% endif %}
+              {% block side %} {% endblock %}
+            </div>
+            <div class="topnav">
+                {% block nav %} {% endblock %}
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search..">
+            </div>
+            <div class="content">
+                {% if user.is_authenticated %}
+                    {% block content %} {% endblock %}
+                {% else %}
+                    <h1 style="font-size: 130%;">You are not logged in.</h1>
+                    <a href="{% url 'login' %}?next={% url 'workspaces:all' %}">Login</a>
+                {% endif %}
+            </div>
+
+            <div class="thread">
+              {% block right %} {% endblock %}
+            </div>
+
+        <div id="send" >
+          {% block send %} {% endblock %}
+        </div>
+
+  </body>
+<script>
+    $(".check>a").hover(function(){
+        $(this).parent().css("background","#3e274f");
+    })
+    $(".check>a").mouseleave(function(){
+         $(this).parent().css("background","none");
+    })
+</script>
+</html>

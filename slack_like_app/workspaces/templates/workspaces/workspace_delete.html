@@ -1,0 +1,30 @@
+{% extends "workspaces/home_list.html" %}
+
+{% block right %}
+<div id = "thread-head" >
+Delete Workspace
+<br/>
+<br/>
+<div style="font-size: 80%;">
+Are you sure you want to delete the workspace <strong> {{ workspace }} </strong> from your workspace list?
+</div>
+<br/>
+{% if user == workspace.owner %}
+<div style="font-size: 80%;">
+Notice that since you are the owner of the workspace <strong> {{ workspace }} </strong>, this will lead to a <span style="color:red;">permanent destruction</span> of this workspace.
+</div>
+{% endif %}
+<br/>
+<br/>
+<br/>
+<form action="" method="POST">
+  {% csrf_token %}
+  <div class="form-group" id="submit">
+                        <div>
+                            <button type="submit" class="btn btn-primary btn-lg">Yes, delete.</button>
+                        </div>
+    </div>
+</form>
+
+</div>
+{% endblock %}

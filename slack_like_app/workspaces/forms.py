@@ -1,5 +1,5 @@
 from django import forms
-from workspaces.models import Workspace
+from workspaces.models import Workspace, Channel
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from workspaces.humanize import naturalsize
 from django.core.exceptions import ValidationError
@@ -18,4 +18,12 @@ class CreateWorkspaceForm(forms.ModelForm):
 
     class Meta:
         model = Workspace
+        fields = ['name','description']
+
+class CreateChannelForm(forms.ModelForm):
+    max_upload_limit = 2 * 1024 * 1024
+    max_upload_limit_text = naturalsize(max_upload_limit)
+
+    class Meta:
+        model = Channel
         fields = ['name','description']

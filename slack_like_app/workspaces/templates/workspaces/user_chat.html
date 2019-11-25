@@ -1,0 +1,52 @@
+{% extends "workspaces/channel_list.html" %}
+
+{% block side %}
+<div><div class="check"><a style="text-decoration: none; color: white;" href="{% url 'workspaces:channel_all' workspace.id %}"> Channels <i class="fas fa-plus-circle"></i> </a></div>
+<ul>
+  {% for channel in channel_list_belong %}
+    <li class="check">
+        # <a style="text-decoration: none; color: white;" href="">{{ channel.name }}</a>
+        </p>
+    </li>
+  {% endfor %}
+</ul>
+</div>
+
+<div><div class="check"><a style="text-decoration: none; color: white;" href=""> Members <i class="fas fa-plus-circle"></i> </a></div>
+
+<ul>
+    {% for member in members %}
+    {% if member == selected_one %}
+    <li class="active">
+        &#x25cb; <a style="text-decoration: none; color: white;" href="">{{ member.username }}</a>
+        </p>
+    </li>
+    {% else %}
+    <li class="check">
+        &#x25cb; <a style="text-decoration: none; color: white;" href="">{{ member.username }}</a>
+        </p>
+    </li>
+    {% endif %}
+  {% endfor %}
+    {% if more %}
+        <li class="check">&#x25cb; ...
+        <a style="text-decoration: none; color: white; font-style: italic; float:right; font-size:80%;" href="">More</a>
+        </p>
+    </li>
+    {% endif %}
+</ul>
+</div>
+{% endblock %}
+
+{% block nav %}
+<a href="{% url 'workspaces:all' %}">Home</a>
+<a href="{% url 'workspaces:channel_all' workspace.id %}">{{ workspace.name }}</a>
+<a class="active" href="">&#x25cb;{{ selected_one.username }}</a>
+{% endblock %}
+
+
+{% block content %}
+{% endblock %}
+
+{% block right %}
+{% endblock %}

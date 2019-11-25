@@ -16,6 +16,7 @@ class Workspace(models.Model):
         return self.name
 
 class Channel(models.Model):
+    users = models.ManyToManyField(User,related_name='auth_users_of_channel')
     workspace = models.ForeignKey(Workspace, on_delete=models.CASCADE)
     name = models.CharField(max_length=255,
         validators=[MinLengthValidator(2, "Name must be greater than 2 characters")])

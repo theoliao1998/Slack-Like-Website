@@ -1,0 +1,25 @@
+{% extends "workspaces/channel_list.html" %}
+
+{% block right %}
+<div id = "thread-head" >
+Delete Channel
+<br/>
+<br/>
+<div style="font-size: 80%;">
+Are you sure you want to join the channel <strong> {{ channel }} </strong>?
+</div>
+<br/>
+<br/>
+<br/>
+<br/>
+<form action="" method="POST">
+  {% csrf_token %}
+  <div class="form-group" id="submit">
+                        <div>
+                            <button type="submit" class="btn btn-primary btn-lg">Yes, join.</button>
+                        </div>
+    </div>
+</form>
+
+</div>
+{% endblock %}

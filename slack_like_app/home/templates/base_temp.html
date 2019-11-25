@@ -15,17 +15,26 @@
   <body>
         <div class="parent">
             <div class="side">
+              {% if user.is_authenticated %}
               {% block workspace_name %} {% endblock %}
+              {% else %}
+              <h2>Workspace</h2>
+              {% endif %}
               {% if user.is_authenticated %}
                     <div> {{ user.get_username }} <img style="width: 25px; float: right;" src="{{ user|gravatar:60 }}"/></div>
                     <div class="check"> <a style="text-decoration: none; color: white;" href="{% url 'logout' %}?next={% url 'workspaces:all' %}"><i class="fas fa-key"></i>Logout</a></div>
                 {% else %}
                     <div class="check"> <a style="text-decoration: none; color: white;" href="{% url 'login' %}?next={% url 'workspaces:all' %}"><i class="fas fa-key"></i>Login</a></div>
                 {% endif %}
+
+            {% if user.is_authenticated %}
               {% block side %} {% endblock %}
+              {% endif %}
             </div>
             <div class="topnav">
+                {% if user.is_authenticated %}
                 {% block nav %} {% endblock %}
+                 {% endif %}
                 <i class="fas fa-search"></i>
                 <input type="text" placeholder="Search..">
             </div>
@@ -39,11 +48,15 @@
             </div>
 
             <div class="thread">
+            {% if user.is_authenticated %}
               {% block right %} {% endblock %}
+              {% endif %}
             </div>
 
         <div id="send" >
+        {% if user.is_authenticated %}
           {% block send %} {% endblock %}
+          {% endif %}
         </div>
 
   </body>

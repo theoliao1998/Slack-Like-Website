@@ -1,49 +1,90 @@
 {% extends "base_temp.html" %}
 {% load crispy_forms_tags %}
 {% block workspace_name %}
-<h2>Home</h2>
+<h2>{{ workspace.name }}</h2>
 {% endblock %}
 
 {% block side %}
-<div><div class="active"><a style="text-decoration: none; color: white;" href="{% url 'workspaces:all' %}"> Workspaces <i class="fas fa-plus-circle"></i> </a></div>
-
+<div><div class="active"><a style="text-decoration: none; color: white;" href="{% url 'workspaces:channel_all' workspace.id %}"> Channels <i class="fas fa-plus-circle"></i> </a></div>
 <ul>
-  {% for workspace in workspace_list %}
+  {% for channel in channel_list_belong %}
     <li class="check">
-        &#x25cb;<a style="text-decoration: none; color: white;" href="">{{ workspace.name }}</a>
+        # <a style="text-decoration: none; color: white;" href="">{{ channel.name }}</a>
         </p>
     </li>
   {% endfor %}
 </ul>
+</div>
 
+<div><div class="check"><a style="text-decoration: none; color: white;" href=""> Members <i class="fas fa-plus-circle"></i> </a></div>
 
+<ul>
+    {% for member in members %}
+    <li class="check">
+        &#x25cb; <a style="text-decoration: none; color: white;" href="">{{ member.username }}</a>
+        </p>
+    </li>
+  {% endfor %}
+    {% if more %}
+        <li class="check">&#x25cb; ...
+        <a style="text-decoration: none; color: white; font-style: italic; float:right; font-size:80%;" href="">More</a>
+        </p>
+    </li>
+    {% endif %}
+</ul>
 </div>
 {% endblock %}
 
 {% block nav %}
-<a class="active" href="">Home</a>
+<a href="{% url 'workspaces:all' %}">Home</a>
+<a class="active" href="{% url 'workspaces:channel_all' workspace.id %}">{{ workspace.name }}</a>
 {% endblock %}
 
 {% block content %}
 
-<h1 style="font-size: 130%;">Current Channels</h1>
-{% for workspace in workspace_list %}
+<h1 style="font-size: 130%;">Channels you belong to</h1>
+{% for channel in channel_list_belong %}
     <div class="message">
-        <div class="user-icon">{{ workspace.name|slice:":1" }}</div>
+        <div class="user-icon">{{ channel.name|slice:":1" }}</div>
         <div class="message-content">
-            <div class="user-name"><strong>{{ workspace.name }}</strong><span class="released-time"> Created on {{ workspace.created_at | date:"d-m-Y"}}</span> </div>
-            <div>{{ workspace.description }}</div>
+            <div class="user-name"><strong>{{ channel.name }}</strong><span class="released-time"> Created on {{ channel.created_at | date:"d-m-Y"}}</span> </div>
+            <div>{{ channel.description }}</div>
+        </div>
+        <div>
+            <a href="{% url 'workspaces:channel_leave' channel.id %}"> <i style="margin: 0.5vw 0.1vw;float:none; color: grey;" class="fas fa-sign-out-alt fa-lg"></i> </a>
+            <a href="{% url 'workspaces:channel_update' channel.id %}"> <i style="margin: 0.5vw 0.1vw;float:none; color: grey;" class="fas fa-edit fa-lg"></i> </a>
+            {% if user == workspace.owner %}
+            <a href="{% url 'workspaces:channel_delete' channel.id %}"> <i style="margin: 0.5vw 0.1vw;float:none; color: grey;" class="fas fa-trash-alt fa-lg"></i> </a>
+            {% endif %}
+        </div>
+    </div>
+{% endfor %}
+<br/>
+<h1 style="font-size: 130%;">Channels you can join</h1>
+{% for channel in channel_list_other %}
+    <div class="message">
+        <div class="user-icon">{{ channel.name|slice:":1" }}</div>
+        <div class="message-content">
+            <div class="user-name"><strong>{{ channel.name }}</strong><span class="released-time"> Created on {{ channel.created_at | date:"d-m-Y"}}</span> </div>
+            <div>{{ channel.description }}</div>
+        </div>
+        <div>
+            <a href="{% url 'workspaces:channel_join' channel.id %}"> <i style="margin: 0.5vw 0.1vw;float:none; color: grey;" class="fas fa-sign-in-alt fa-lg"></i> </a>
+            {% if user == workspace.owner %}
+            <a href="{% url 'workspaces:channel_delete' channel.id %}"> <i style="margin: 0.5vw 0.1vw;float:none; color: grey;" class="fas fa-trash-alt fa-lg"></i> </a>
+            {% endif %}
         </div>
     </div>
 {% endfor %}
 
 {% endblock %}
 
-{% block right %}
 
-<div id = "thread-head" >Create a workspace
+{% block right %}
+<div id='create'>
+<div id = "thread-head" >Create a channel
               <div style="font-size: 80%; color: grey;">
-                  Workspaces have channels where members can communicate.
+                  Channels are where members communicate. They're best when organized around a topic.
               </div>
             </div>
               <form action="" method="post" id="upload_form" enctype="multipart/form-data" class="form-horizontal">
@@ -58,5 +99,5 @@
                         </div>
                 </div>
             </form>
-
+</div>
 {% endblock %}

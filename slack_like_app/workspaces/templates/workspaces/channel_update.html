@@ -1,10 +1,10 @@
-{% extends "workspaces/home_list.html" %}
+{% extends "workspaces/channel_list.html" %}
 {% load crispy_forms_tags %}
 {% block right %}
 <div id = "thread-head" >
-Update Workspace
+Update Channel
 <div style="font-size: 80%; color: grey;">
-As the owner of the workspace <strong> {{ workspace }} </strong>, you can update the name and the description of this workspace.
+As a user of the channel <strong> {{ channel }} </strong>, you can update the name and the description of this channel.
 </div>
 <form action="" method="post" id="upload_form" enctype="multipart/form-data" class="form-horizontal">
                 <fieldset>

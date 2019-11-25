@@ -10,7 +10,7 @@
 <ul>
   {% for workspace in workspace_list %}
     <li class="check">
-        &#x25cb;<a style="text-decoration: none; color: white;" href="">{{ workspace.name }}</a>
+        &nbsp;&nbsp;<a style="text-decoration: none; color: white;" href="{% url 'workspaces:channel_all' workspace.id %}">{{ workspace.name }}</a>
         </p>
     </li>
   {% endfor %}
@@ -21,7 +21,7 @@
 {% endblock %}
 
 {% block nav %}
-<a class="active" href="">Home</a>
+<a class="active" href="{% url 'workspaces:all' %}">Home</a>
 {% endblock %}
 
 {% block content %}
@@ -31,13 +31,15 @@
     <div class="message">
         <div class="user-icon">{{ workspace.name|slice:":1" }}</div>
         <div class="message-content">
-            <div class="user-name"><strong>{{ workspace.name }}</strong><span class="released-time"> Created on {{ workspace.created_at | date:"d-m-Y"}}</span> </div>
+            <div class="user-name"> <a href="{% url 'workspaces:channel_all' workspace.id %}"><strong>{{ workspace.name }}</strong></a><span class="released-time"> Created on {{ workspace.created_at | date:"d-m-Y"}}</span> </div>
             <div>{{ workspace.description }}</div>
         </div>
         <div>
-            <a href="{% url 'workspaces:workspace_delete' workspace.id %}"> <i style="margin: 0.5vw 0.1vw;float:none; color: grey;" class="fas fa-trash-alt fa-lg"></i> </a>
             {% if user == workspace.owner %}
+            <a href="{% url 'workspaces:workspace_delete' workspace.id %}"> <i style="margin: 0.5vw 0.1vw;float:none; color: grey;" class="fas fa-sign-out-alt fa-lg"></i> </a>
             <a href="{% url 'workspaces:workspace_update' workspace.id %}"> <i style="margin: 0.5vw 0.1vw;float:none; color: grey;" class="fas fa-edit fa-lg"></i> </a>
+            {% else %}
+            <a href="{% url 'workspaces:workspace_leave' workspace.id %}"> <i style="margin: 0.5vw 0.1vw;float:none; color: grey;" class="fas fa-sign-out-alt fa-lg"></i> </a>
             {% endif %}
         </div>
     </div>

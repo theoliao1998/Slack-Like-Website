@@ -1,0 +1,37 @@
+{% extends "workspaces/channel_list.html" %}
+{% load humanize %}
+
+{% block nav %}
+<a href="{% url 'workspaces:all' %}">Home</a>
+{% if user in workspace.users.all %}
+<a href="{% url 'workspaces:channel_all' workspace.id %}">{{ workspace.name }}</a>
+<a class="active" href="">Members</a>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+{% if user in workspace.users.all %}
+<h1 style="font-size: 130%;">Members of the workspace <strong>{{ workspace.name }}</strong></h1>
+{% for member in member_list %}
+    <div class="message">
+        <div class="user-icon">{{ member.username|slice:":1" }}</div>
+        <div class="message-content">
+            <div class="user-name"><strong>{{ member.username }}</strong>
+            <span class="released-time">
+                {% if member.profile.is_online %}
+                 Currently online
+                {% else %}
+                 Last login at {{ member.last_login|naturaltime }}
+                {% endif %}
+
+            </span>
+
+            </div>
+            <div>{{ member.profile.content }}</div>
+        </div>
+    </div>
+{% endfor %}
+{% else %}
+<h1 style="font-size: 130%;">You don't have permission to access this page!</h1>
+{% endif %}
+{% endblock %}

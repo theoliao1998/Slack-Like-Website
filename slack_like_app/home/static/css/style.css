@@ -14,14 +14,14 @@ h2{
 .parent { 
   display: grid; 
   grid-template-columns: 1.5fr 2fr 3fr 1fr 2fr; 
-  grid-template-rows: 0.6fr repeat(4, 2fr); 
+  grid-template-rows: 0.6fr repeat(4, 2fr) 0.6fr; 
   grid-column-gap: 0px;
   grid-row-gap: 0px; 
   height: 100vh;
   }
   
   .side { 
-    grid-area: 1 / 1 / 6 / 2; 
+    grid-area: 1 / 1 / 7 / 2; 
     background: linear-gradient(black,#3e274f);
     color: white;
     font-size: 120%;;
@@ -123,9 +123,10 @@ i{
 
   .content { 
     grid-area: 2 / 2 / 6 / 4; 
-    border-right:2px solid rgba(0,0,0,.6);
     /* overflow:scroll; */
     display: flexbox;
+    overflow: scroll;
+    overflow-x: hidden; 
   } 
 
   .message{
@@ -168,7 +169,9 @@ i{
     color:grey;
   }
 
-  .thread { grid-area: 2 / 4 / 6 / 6; } 
+  .thread { 
+    grid-area: 2 / 4 / 7 / 6; 
+    border-left:2px solid rgba(0,0,0,.6);} 
 
   #thread-head{
     margin: 1vh;
@@ -187,6 +190,7 @@ i{
   flex: 1 1 300px;
   overflow: hidden;
 }
+
 
 #send-reply{
   position: relative;

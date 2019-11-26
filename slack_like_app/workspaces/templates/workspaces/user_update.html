@@ -1,12 +1,11 @@
-{% extends "workspaces/home_list.html" %}
+{% extends "workspaces/user_chat.html" %}
 {% load crispy_forms_tags %}
 {% block right %}
-{% if user in workspace.users.all %}
-<div id = "thread-head" >
-Update Workspace
-<div style="font-size: 80%; color: grey;">
-As the owner of the workspace <strong> {{ workspace }} </strong>, you can update the name and the description of this workspace.
-</div>
+<div id='create'>
+<div id = "thread-head" > Update your user profile
+            </div>
+<br>
+<br>
 <form action="" method="post" id="upload_form" enctype="multipart/form-data" class="form-horizontal">
                 <fieldset>
                     <legend class="text-center header"> </legend>
@@ -20,6 +19,7 @@ As the owner of the workspace <strong> {{ workspace }} </strong>, you can update
                 </div>
             </form>
 
+<br>
+
 </div>
-{% endif %}
 {% endblock %}

@@ -1,0 +1,31 @@
+{% extends "workspaces/home_list.html" %}
+
+{% block right %}
+<div id = "thread-head" >
+Workspace Sharelink
+<br/>
+<br/>
+{% if user in workspace.users.all %}
+<div style="font-size: 80%;">
+The workspace <strong> {{ workspace }} </strong> is already in your workspace list!
+</div>
+{% else %}
+<div style="font-size: 80%;">
+Are you sure you want to add the workspace <strong> {{ workspace }} </strong> to your workspace list?
+</div>
+<br/>
+<br/>
+<br/>
+<form action="" method="POST">
+  {% csrf_token %}
+  <div class="form-group" id="submit">
+                        <div>
+                            <button type="submit" class="btn btn-primary btn-lg">Yes, add.</button>
+                        </div>
+    </div>
+</form>
+
+</div>
+{% endif %}
+
+{% endblock %}

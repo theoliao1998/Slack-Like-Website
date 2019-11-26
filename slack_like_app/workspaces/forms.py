@@ -1,5 +1,6 @@
 from django import forms
 from workspaces.models import Workspace, Channel
+from django.contrib.auth.models import User
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from workspaces.humanize import naturalsize
 from django.core.exceptions import ValidationError
@@ -27,3 +28,15 @@ class CreateChannelForm(forms.ModelForm):
     class Meta:
         model = Channel
         fields = ['name','description']
+
+
+class CreateUserForm(forms.ModelForm):
+    max_upload_limit = 2 * 1024 * 1024
+    max_upload_limit_text = naturalsize(max_upload_limit)
+
+    class Meta:
+        model = User
+        fields = ['username','first_name','last_name','email']
+
+class DirectMessageForm(forms.Form):
+    content = forms.CharField(required=True, max_length=255, strip=True)

@@ -1,10 +1,13 @@
 {% extends "base_temp.html" %}
 {% load crispy_forms_tags %}
 {% block workspace_name %}
+{% if user in workspace.users.all %}
 <h2>{{ workspace.name }}</h2>
+{% endif %}
 {% endblock %}
 
 {% block side %}
+{% if user in workspace.users.all %}
 <div><div class="active"><a style="text-decoration: none; color: white;" href="{% url 'workspaces:channel_all' workspace.id %}"> Channels <i class="fas fa-plus-circle"></i> </a></div>
 <ul>
   {% for channel in channel_list_belong %}
@@ -21,7 +24,7 @@
 <ul>
     {% for member in members %}
     <li class="check">
-        &#x25cb; <a style="text-decoration: none; color: white;" href="">{{ member.username }}</a>
+        &#x25cb; <a style="text-decoration: none; color: white;" href="{% url 'workspaces:workspace_user' workspace.id member.id %}">{{ member.username }}</a>
         </p>
     </li>
   {% endfor %}
@@ -33,15 +36,18 @@
     {% endif %}
 </ul>
 </div>
+{% endif %}
 {% endblock %}
 
 {% block nav %}
 <a href="{% url 'workspaces:all' %}">Home</a>
+{% if user in workspace.users.all %}
 <a class="active" href="{% url 'workspaces:channel_all' workspace.id %}">{{ workspace.name }}</a>
+{% endif %}
 {% endblock %}
 
 {% block content %}
-
+{% if user in workspace.users.all %}
 <h1 style="font-size: 130%;">Channels you belong to</h1>
 {% for channel in channel_list_belong %}
     <div class="message">
@@ -76,11 +82,14 @@
         </div>
     </div>
 {% endfor %}
-
+{% else %}
+<h1 style="font-size: 130%;">You don't have permission to access this page!</h1>
+{% endif %}
 {% endblock %}
 
 
 {% block right %}
+{% if user in workspace.users.all %}
 <div id='create'>
 <div id = "thread-head" >Create a channel
               <div style="font-size: 80%; color: grey;">
@@ -100,4 +109,5 @@
                 </div>
             </form>
 </div>
+{% endif %}
 {% endblock %}

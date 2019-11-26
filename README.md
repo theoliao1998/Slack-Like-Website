@@ -1,2 +1,4 @@
 # Slack-Like-Website
-Build a slack-like website with Django.
+SI664 final project.  
+Build a slack-like website with Django.  
+Currently building on https://theoliao.pythonanywhere.com/

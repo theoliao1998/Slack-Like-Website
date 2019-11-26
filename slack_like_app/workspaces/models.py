@@ -3,6 +3,11 @@ from django.core.validators import MinLengthValidator
 from django.contrib.auth.models import User
 from django.conf import settings
 
+class Profile(models.Model):
+    user = models.OneToOneField(User, related_name='profile', on_delete=models.CASCADE)
+    is_online = models.BooleanField(default=False)
+    content = models.CharField(max_length=255, blank=True, null=True)
+
 class Workspace(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     users = models.ManyToManyField(User,related_name='auth_users_of_workspace')
@@ -10,6 +15,7 @@ class Workspace(models.Model):
         validators=[MinLengthValidator(2, "Name must be greater than 2 characters")])
     description = models.CharField(max_length=255, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    sharelink = models.CharField(max_length=20,default=User.objects.make_random_password(length=14))
 
     # Shows up in the list
     def __str__(self):
@@ -51,7 +57,6 @@ class DirectMessage(models.Model):
     content = models.CharField(max_length=255, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
 
 
 

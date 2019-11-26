@@ -1,5 +1,7 @@
 {% extends "workspaces/channel_list.html" %}
-
+{% load app_tags %}
+{% load crispy_forms_tags %}
+{% load humanize %}
 {% block side %}
 <div><div class="check"><a style="text-decoration: none; color: white;" href="{% url 'workspaces:channel_all' workspace.id %}"> Channels <i class="fas fa-plus-circle"></i> </a></div>
 <ul>
@@ -18,12 +20,12 @@
     {% for member in members %}
     {% if member == selected_one %}
     <li class="active">
-        &#x25cb; <a style="text-decoration: none; color: white;" href="">{{ member.username }}</a>
+        &#x25cb; <a style="text-decoration: none; color: white;" href="{% url 'workspaces:workspace_user' workspace.id member.id %}">{{ member.username }}</a>
         </p>
     </li>
     {% else %}
     <li class="check">
-        &#x25cb; <a style="text-decoration: none; color: white;" href="">{{ member.username }}</a>
+        &#x25cb; <a style="text-decoration: none; color: white;" href="{% url 'workspaces:workspace_user' workspace.id member.id %}">{{ member.username }}</a>
         </p>
     </li>
     {% endif %}
@@ -41,12 +43,170 @@
 {% block nav %}
 <a href="{% url 'workspaces:all' %}">Home</a>
 <a href="{% url 'workspaces:channel_all' workspace.id %}">{{ workspace.name }}</a>
-<a class="active" href="">&#x25cb;{{ selected_one.username }}</a>
+<a class="active" href="">&#x25cb; {{ selected_one.username }}</a>
 {% endblock %}
 
 
 {% block content %}
+
+{% for msg in msgs %}
+    <div class="message" id="msg_{{ msg.id }}">
+        <div class="user-icon">{{ msg.user.username|slice:":1" }}</div>
+        <div class="message-content">
+            <div class="user-name"> <a href="{% url 'workspaces:workspace_user' workspace.id msg.user.id %}" > <strong>{{ msg.user.username }}</strong></a><span class="released-time"> {{ msg.created_at|naturaltime }}</span> </div>
+            <div>{{ msg.content }}</div>
+        </div>
+        <div>
+            {% if user == msg.user %}
+            <a href="#" onclick=
+             "msgPost('{% url 'workspaces:user_message_delete' msg.id %}', {{ msg.id }} );return false;"> <i style="margin: 0.5vw 0.1vw;float:none; color: grey;" class="fas fa-trash-alt fa-lg"></i> </a>
+            {% endif %}
+        </div>
+    </div>
+{% endfor %}
+
+
 {% endblock %}
 
 {% block right %}
+<div id='create'>
+<div id = "thread-head" > User Profile of
+{{ selected_one.username }} <img style="width: 40px; float: right; margin:0 3vw;" src="{{ selected_one|gravatar:60 }}"/>
+            </div>
+<br>
+<br>
+<table>
+                  <tbody>
+                    <tr>
+                        <th scope="row" class="rowhead first">User Name</th>
+                        <td class="first">{{ selected_one.username }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="rowhead">First Name</th>
+                        <td>{{ selected_one.first_name }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="rowhead">Last Name</th>
+                        <td>{{ selected_one.last_name }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="rowhead">Email Address&nbsp;&nbsp;</th>
+                        <td>{{ selected_one.email }}</td>
+                    </tr>
+                  </tbody>
+</table>
+<br>
+{% if user == selected_one %}
+&nbsp;&nbsp;<a href="{% url 'workspaces:user_update' workspace.id user.id %}"><i style="margin: 0.5vw 0.1vw;float:none; color: grey;" class="fas fa-edit fa-lg"></i> Edit</a>
+{% endif %}
+</div>
+{% endblock %}
+
+{% block send %}
+{% csrf_token %}
+<i class="fas fa-paperclip attachIcon"></i>
+<input class="sendBox" type="text" name="content" placeholder="Message to be sent to {{ selected_one.username }}" maxlength="255" required id="id_content">
+<input  type="submit" value="Send" class="sendButton">
+{% endblock %}
+
+{% block script %}
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue =   decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+var csrftoken = getCookie('csrftoken');
+function csrfSafeMethod(method) {
+    // these HTTP methods do not require CSRF protection
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+$.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        }
+    }
+});
+
+function updateMsg() {
+    $.getJSON('{% url 'workspaces:user_message_get' selected_one.id %}', function(rowz){
+      $('#content').empty();
+      for (var i = 0; i < rowz.length; i++) {
+        arow = rowz[i];
+        url = "/workspace/" + {{ workspace.id }} + "/user/" +  arow[5];
+        let cntt = '<div class="message"> <div class="user-icon">' + arow[0][0] +
+            '</div><div class="message-content"><div class="user-name"> <a href="' +url +
+            '" > <strong>' + arow[0] +
+            '</strong></a><span class="released-time"> ' + arow[1] + '</span> </div> <div>' + arow[2] +
+            '</div> </div>'
+
+        if(arow[3]){
+            url = `'/usermsg/` + arow[4] +`/delete'`;
+            cntt += `<div> <a href="#" onclick=
+             "msgPost(`+ url +`,`+ arow[4] +
+             `);return false;"> <i style="margin: 0.5vw 0.1vw;float:none; color: grey;" class="fas fa-trash-alt fa-lg"></i> </a></div></div>`
+        } else {
+            cntt += '</div>'
+        }
+
+        $('#content').append(cntt);
+      }
+      setTimeout(updateMsg, 4000);
+  });
+}
+
+
+$( document ).ready(function(){
+    $.ajaxSetup({ cache: false });
+
+    $('#content').scrollTop($('#content')[0].scrollHeight);
+})
+
+$('#send').submit(function() {
+        $.ajax({
+            type: 'POST',
+            url: '{% url 'workspaces:user_message' selected_one.id %}',
+            data: { content: $("#id_content").val()},
+            dataType: 'json',
+            success: function(data){
+                console.log(data);
+            }
+        });
+        $("#id_content").val("");
+        updateMsg();
+        return false;
+});
+
+function msgPost(url, msg_id) {
+    fetch(url, {
+        method: "POST", // *GET, POST, PUT, DELETE, etc.
+        mode: "cors", // no-cors, cors, *same-origin
+        cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: "same-origin", // include, *same-origin, omit
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+        },
+        redirect: "follow", // manual, *follow, error
+        referrer: "no-referrer", // no-referrer, *client
+    }).then(function(data) {
+        console.log(url, 'finished');
+        updateMsg();
+    }).catch(function() {
+        console.log(url, 'error');
+    })
+}
+
+
+
+
 {% endblock %}

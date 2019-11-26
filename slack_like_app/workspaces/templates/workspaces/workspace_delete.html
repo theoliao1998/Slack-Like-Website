@@ -1,6 +1,7 @@
 {% extends "workspaces/home_list.html" %}
 
 {% block right %}
+{% if user in workspace.users.all %}
 <div id = "thread-head" >
 Delete Workspace
 <br/>
@@ -27,4 +28,5 @@ Notice that since you are the owner of the workspace <strong> {{ workspace }} </
 </form>
 
 </div>
+{% endif %}
 {% endblock %}

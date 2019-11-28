@@ -1,5 +1,5 @@
 from django import forms
-from workspaces.models import Workspace, Channel
+from workspaces.models import Workspace, Channel, Profile
 from django.contrib.auth.models import User
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from workspaces.humanize import naturalsize
@@ -38,5 +38,16 @@ class CreateUserForm(forms.ModelForm):
         model = User
         fields = ['username','first_name','last_name','email']
 
+class ProfileForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = ['content']
+
 class DirectMessageForm(forms.Form):
+    content = forms.CharField(required=True, max_length=255, strip=True)
+
+class ChannelMessageForm(forms.Form):
+    content = forms.CharField(required=True, max_length=255, strip=True)
+
+class ReplyForm(forms.Form):
     content = forms.CharField(required=True, max_length=255, strip=True)

@@ -11,17 +11,17 @@ h2{
 }
 
 
-.parent { 
-  display: grid; 
-  grid-template-columns: 1.5fr 2fr 3fr 1fr 2fr; 
-  grid-template-rows: 0.6fr repeat(4, 2fr) 0.6fr; 
+.parent {
+  display: grid;
+  grid-template-columns: 1.5fr 2fr 3fr 1fr 2fr;
+  grid-template-rows: 0.6fr repeat(4, 2fr) 0.6fr;
   grid-column-gap: 0px;
-  grid-row-gap: 0px; 
+  grid-row-gap: 0px;
   height: 100vh;
   }
-  
-  .side { 
-    grid-area: 1 / 1 / 7 / 2; 
+
+  .side {
+    grid-area: 1 / 1 / 7 / 2;
     background: linear-gradient(black,#3e274f);
     color: white;
     font-size: 120%;;
@@ -33,7 +33,7 @@ h2{
 
 
 .topnav {
-  grid-area: 1 / 2 / 2 / 6; 
+  grid-area: 1 / 2 / 2 / 6;
   /* background: #c8b4d6; */
   border-bottom:2px solid rgba(0,0,0,.6);
   overflow: hidden;
@@ -99,10 +99,10 @@ i{
   /* background: url("http://kodyrabatowe.wp.pl/img/ico/search_gr.png") top left     no-repeat; */
 }
 
-/* input{    
-  
+/* input{
+
   height:30px;
-  padding-left:25px;   
+  padding-left:25px;
   } */
 
 /* When the screen is less than 600px wide, stack the links and the search field vertically instead of horizontally */
@@ -121,17 +121,17 @@ i{
 }
 
 
-  .content { 
-    grid-area: 2 / 2 / 6 / 4; 
+  .content {
+    grid-area: 2 / 2 / 6 / 4;
     /* overflow:scroll; */
     display: flexbox;
     overflow: scroll;
-    overflow-x: hidden; 
-  } 
+    overflow-x: hidden;
+  }
 
   .message{
     display: grid;
-    grid-template-columns: 0.5fr 3.5fr 0.2fr; 
+    grid-template-columns: 0.5fr 3.5fr 0.2fr;
     border-bottom:2px solid rgba(0,0,0,.1);
   }
 
@@ -149,9 +149,11 @@ i{
     display: inline-block;
     width:2vw;
     height: 2vw;
-    margin-top: 3px;
+    margin: 0.3vw 0;
     background-color: silver;
     justify-self: center;
+    text-align: center;
+    line-height: 2vw;
     /* align-self: center; */
   }
   .reply-cnt{
@@ -169,9 +171,9 @@ i{
     color:grey;
   }
 
-  .thread { 
-    grid-area: 2 / 4 / 7 / 6; 
-    border-left:2px solid rgba(0,0,0,.6);} 
+  .thread {
+    grid-area: 2 / 4 / 7 / 6;
+    border-left:2px solid rgba(0,0,0,.6);}
 
   #thread-head{
     margin: 1vh;
@@ -224,14 +226,28 @@ i{
   border-radius: 0;
 }
 
+span.red {
+  background: red;
+   border-radius: 0.8em;
+  -moz-border-radius: 0.8em;
+  -webkit-border-radius: 0.8em;
+  color: #ffffff;
+  display: inline-block;
+  font-weight: bold;
+  line-height: 1.6em;
+  margin-right: 15px;
+  text-align: center;
+  width: 1.6em;
+}
+
 
 
 @media all and (min-width:600px){
-  
+
 }
 
 
 @media all and (min-width:1050px){
- 
+
 }
 

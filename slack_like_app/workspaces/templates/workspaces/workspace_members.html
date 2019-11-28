@@ -12,11 +12,11 @@
 {% block content %}
 {% if user in workspace.users.all %}
 <h1 style="font-size: 130%;">Members of the workspace <strong>{{ workspace.name }}</strong></h1>
-{% for member in member_list %}
+{% for member in workspace.users.all %}
     <div class="message">
         <div class="user-icon">{{ member.username|slice:":1" }}</div>
         <div class="message-content">
-            <div class="user-name"><strong>{{ member.username }}</strong>
+            <div class="user-name"><a href="{% url 'workspaces:workspace_user' workspace.id member.id %}" ><strong>{{ member.username }}</strong></a>
             <span class="released-time">
                 {% if member.profile.is_online %}
                  Currently online
@@ -34,4 +34,61 @@
 {% else %}
 <h1 style="font-size: 130%;">You don't have permission to access this page!</h1>
 {% endif %}
+{% endblock %}
+
+{% block right %}
+{% if user in workspace.users.all %}
+<div id = "thread-head"> Current valid sharelinks for Workspace1</div>
+    <div style="overflow:scroll; max-height:68vh; overflow-x:hidden">
+    {% for s in sharelinks %}
+              <div style="word-break: break-all;white-space: normal;">&#11044; <span style="color: blue; font-style: italic;">https://theoliao.pythonanywhere.com/workspace/{{ workspace.id }}/sharelink/{{ s.addr }}</span>
+              <br>&nbsp;&nbsp; <span class="released-time"> Valid until {{ s.expired_at }}</span> </div>
+    {% endfor %}
+    </div>
+            <br>
+            <div style="word-break: break-all;white-space: normal;">
+                &nbsp;&nbsp;You can also generate a new sharelinks which will expire in 30 days.
+            </div>
+            <br>
+
+            <form class="form-horizontal"  id="sharelink">
+
+              <fieldset>
+            <div class="form-group" id="submit">
+                <div style="text-align:center;">
+                    <a style="margin:0 auto;" href="{% url 'workspaces:workspace_members' workspace.id %}" onclick="createSharelink();"  class="btn btn-primary btn-lg">Generate</a>
+                </div>
+            </div>
+          </fieldset>
+        </form>
+{% endif %}
+{% endblock %}
+
+{% block script %}
+$(document).ready(function() {
+  $.ajaxSetup({ cache: false });
+});
+
+function createSharelink() {
+    url = "{% url 'workspaces:sharelink_create' workspace.id %}"
+
+    fetch(url, {
+        method: "POST", // *GET, POST, PUT, DELETE, etc.
+        mode: "cors", // no-cors, cors, *same-origin
+        cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: "same-origin", // include, *same-origin, omit
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+        },
+        redirect: "follow", // manual, *follow, error
+        referrer: "no-referrer", // no-referrer, *client
+    }).then(function(data) {
+        console.log(url, 'finished');
+        alert('A new sharelink is successfully generated!');
+        //updateMsg(true);
+    }).catch(function() {
+        console.log(url, 'error');
+    })
+}
+
 {% endblock %}

@@ -1,0 +1,344 @@
+{% extends "workspaces/channel_list.html" %}
+{% load humanize %}
+{% block side %}
+{% if user in channel.users.all %}
+<div><div class="check"><a style="text-decoration: none; color: white;" href="{% url 'workspaces:channel_all' workspace.id %}"> Channels <i class="fas fa-plus-circle"></i> </a></div>
+<ul>
+  {% for c in channel_list_belong %}
+    {% if c == channel %}
+    <li class="active">
+    {% else %}
+    <li class="check">
+    {% endif %}
+        # <a style="text-decoration: none; color: white;" href="">{{ c.name }}</a>
+        </p>
+    </li>
+  {% endfor %}
+</ul>
+</div>
+
+<div><div class="check"><a style="text-decoration: none; color: white;" href="{% url 'workspaces:workspace_members' workspace.id %}"> Members <i class="fas fa-plus-circle"></i> </a></div>
+
+<ul>
+    {% for member in members %}
+    <li class="check">
+        &#x25cb; <a style="text-decoration: none; color: white;" href="{% url 'workspaces:workspace_user' workspace.id member.id %}">{{ member.username }}</a>
+        </p>
+    </li>
+  {% endfor %}
+    {% if more %}
+        <li class="check">&#x25cb; ...
+        <a style="text-decoration: none; color: white; font-style: italic; float:right; font-size:80%;" href="{% url 'workspaces:workspace_members' workspace.id %}">More</a>
+        </p>
+    </li>
+    {% endif %}
+</ul>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block nav %}
+<a href="{% url 'workspaces:all' %}">Home</a>
+{% if user in channel.users.all %}
+<a href="{% url 'workspaces:channel_all' workspace.id %}">{{ workspace.name }}</a>
+<a class="active" href="{% url 'workspaces:channel' channel.id %}"># {{ channel.name }}</a>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+{% if user in channel.users.all %}
+
+{% for datemsgs in datemessages %}
+    <div style="text-align:center;"><strong>{{ datemsgs.date|naturalday }}</strong></div>
+    {% for msg in datemsgs.channelmessage_set.all %}
+    <div class="message" id="msg_{{ msg.id }}">
+        <div class="user-icon">{{ msg.user.username|slice:":1" }}</div>
+        <div class="message-content">
+            <div class="user-name"><a href="{% url 'workspaces:workspace_user' workspace.id msg.user.id %}" > <strong>{{ msg.user.username }}</strong></a><span class="released-time"> {{ msg.created_at|naturaltime }}</span> </div>
+            <div>{{ msg.content }}</div>
+            {% if msg.reply_set.count %}
+            <div class="reply">
+                {% for r in msg.reply_set.all %}
+                    {% ifchanged %}
+                    <div style='display:none;'>{{ r.user.username }} </div>
+                    <div class="user-icon-small">{{ r.user.username|slice:":1" }} </div>
+                    {% endifchanged %}
+                {% endfor %}
+                <div class="reply-cnt"><a href="#" style="color:lightskyblue;" onclick="let first = $('[id^=thread-head-]').length==0;$('[id^=thread-head]').attr('id','thread-head-{{ msg.id }}');updateReply(false,{{ msg.id }},first); return false;"> {{ msg.reply_set.count }} replies </a></div>
+                 <span class="released-time" style="font-size: 80%;">Last reply {{ msg.get_last_reply_time|naturaltime }} </span>
+
+            </div>
+            {% endif %}
+        </div>
+        <div>
+            <a href="#" onclick="let first = $('[id^=thread-head-]').length==0;$('[id^=thread-head]').attr('id','thread-head-{{ msg.id }}');updateReply(false,{{ msg.id }},first); return false;" >
+            <i style="margin: 0.5vw 0.1vw;float:none; color: grey;" class="fas fa-reply fa-lg"></i> </a>
+
+            {% if user == msg.user %}
+            <a href="#" onclick=
+             "msgPost('{% url 'workspaces:channel_message_delete' msg.id %}', {{ msg.id }} );return false;"> <i style="margin: 0.5vw 0.1vw;float:none; color: grey;" class="fas fa-trash-alt fa-lg"></i> </a>
+            {% endif %}
+        </div>
+
+    </div>
+    {% endfor %}
+{% endfor %}
+
+{% else %}
+<h1 style="font-size: 130%;">You don't have permission to access this page!</h1>
+{% endif %}
+{% endblock %}
+
+{% block right %}
+<div id="before"> </div>
+<div id='create'>
+<div id = "thread-head" > # {{ channel.name }}
+<div class="released-time" style="font-size:80%;">
+                Created on {{ channel.created_at | date:"d-m-Y" }}
+</div>
+</div>
+<table>
+                  <tbody>
+                    <tr>
+                        <th scope="row" class="rowhead first">&nbsp;&nbsp;Name</th>
+                        <td class="first">&nbsp;&nbsp;{{ channel.name }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="rowhead first">&nbsp;&nbsp;</th>
+                        <td class="first">&nbsp;&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="rowhead">&nbsp;&nbsp;Description</th>
+                        <td>&nbsp;&nbsp;{{ channel.description }}</td>
+                    </tr>
+                  </tbody>
+</table>
+<br>
+&nbsp;&nbsp;<a href="{% url 'workspaces:channel_update' channel.id %}"><i style="margin: 0.5vw 0.1vw;float:none; color: grey;" class="fas fa-edit fa-lg"></i> Edit</a>
+
+{% if user == workspace.owner %}
+&nbsp;&nbsp;<a href="{% url 'workspaces:channel_delete' channel.id %}"><i style="margin: 0.5vw 0.1vw;float:none; color: grey;" class="fas fa-trash-alt fa-lg"></i> Delete</a>
+{% endif %}
+</div>
+{% endblock %}
+
+{% block send %}
+{% if user in channel.users.all %}
+{% csrf_token %}
+<i class="fas fa-paperclip attachIcon"></i>
+<input class="sendBox" type="text" name="content" placeholder="Message # {{ channel }}" maxlength="255" required id="id_content">
+<input  type="submit" value="Send" class="sendButton">
+{% endif %}
+{% endblock %}
+
+{% block script %}
+
+$.ajaxSetup({
+     beforeSend: function(xhr, settings) {
+         function getCookie(name) {
+             var cookieValue = null;
+             if (document.cookie && document.cookie != '') {
+                 var cookies = document.cookie.split(';');
+                 for (var i = 0; i < cookies.length; i++) {
+                     var cookie = jQuery.trim(cookies[i]);
+                     // Does this cookie string begin with the name we want?
+                     if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                         cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                         break;
+                     }
+                 }
+             }
+             return cookieValue;
+         }
+         if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
+             // Only send the token to relative URLs i.e. locally.
+             xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+         }
+     }
+});
+
+function updateReply(once,msg_id, first) {
+    //let at_bottom = $('#content')[0].scrollHeight - $('#content')[0].scrollTop - $('#content')[0].clientHeight < 1;
+    if(!once && !$("#thread-head-"+msg_id).length){
+        return;
+    }
+
+    $.getJSON('/channelmsg/'+msg_id+'/reply', function(rowz){
+        console.log(rowz);
+        $('#before').empty();
+        $('#before').append('<div style="font-size:130%;" id = "' +
+        ("thread-head-"+msg_id) +'" >Thread </div>');
+        $('#before').append($("#msg_"+msg_id)[0].cloneNode(true));
+
+
+        $('#create').empty();
+
+        $('#create').append('<div style="color: grey;"> Replies </div> ');
+        for (var i = 0; i < rowz.length; i++) {
+          arow = rowz[i];
+          url = "/workspace/" + {{ workspace.id }} + "/user/" +  arow[5];
+          let cntt = '<div class="message"> <div class="user-icon">' + arow[0][0] +
+            '</div><div class="message-content"><div class="user-name"> <a href="' +url +
+            '" > <strong>' + arow[0] +
+            '</strong></a><span class="released-time"> ' + arow[1] + '</span> </div> <div>' + arow[2] +
+            '</div> </div>';
+          if(arow[3]){
+            url = `'/reply/` + arow[4] +`/delete'`;
+            cntt += `<div> <a href="#" onclick=
+             "replyPost(`+ url +`,`+ msg_id +
+             `);return false;"> <i style="margin: 0.5vw 0.1vw;float:none; color: grey;" class="fas fa-trash-alt fa-lg"></i> </a></div>`;
+          }
+
+          cntt += '</div>';
+          $('#create').append(cntt);
+        }
+
+        if(first){
+          $('#create').parent().append('<form id="send-reply" onsubmit="return post(event);" > <i class="fas fa-paperclip attachIcon"></i>{% csrf_token %}<input class="sendBox" type="text" name="content" placeholder="Reply" maxlength="255" required id="reply_content"><input type="submit" value="Send" class="sendButton"></form>');
+          $('#create').css("overflow","scroll");
+          $('#create').css("overflow-x","hidden");
+          let h = $('.thread').height()-$('#before').height()-$('#send-reply').height()-16;
+          $('#create').css("max-height",h);
+        }
+  });
+  $.ajaxSetup({ cache: false });
+  if(!once){
+        setTimeout('updateReply(false,'+ msg_id+',false)', 4000);
+  }
+}
+
+
+function updateMsg(once) {
+    let at_bottom = $('#content')[0].scrollHeight - $('#content')[0].scrollTop - $('#content')[0].clientHeight < 1;
+    $.getJSON('{% url 'workspaces:channel_message_get' channel.id %}', function(resp){
+      //console.log(resp);
+      $('#content').empty();
+      $.each( resp, function( i, val ) {
+        $('#content').append('<div style="text-align:center;"><strong>'+ i+'</strong></div>');
+        let cntt = ''
+        $.each( val, function( _, arow ){
+            url = "/workspace/" + {{ workspace.id }} + "/user/" +  arow[5];
+            cntt += '<div class="message" id="msg_' + arow[4] +'"> <div class="user-icon">' + arow[0][0] +
+                '</div><div class="message-content"><div class="user-name"> <a href="' +url +
+                '" > <strong>' + arow[0] +
+                '</strong></a><span class="released-time"> ' + arow[1] + '</span> </div> <div>' + arow[2] +
+                '</div>';
+            if(arow[6].length){
+                cntt += '<div class="reply">';
+                $.each(arow[6], function( _, r){
+                    cntt += '<div style="display:none;"></div><div class="user-icon-small"> ' + r[0] + ' </div> ';
+                });
+                cntt += `<div class="reply-cnt"><a href="#" style="color:lightskyblue;" onclick="let first = $('[id^=thread-head-]').length==0;$('[id^=thread-head]').attr('id','thread-head-'+`+
+                arow[4] + `);updateReply(false,`+arow[4]+
+                `,first); return false;">` + arow[7] + ` replies</a> </div> <span class="released-time" style="font-size: 80%;">Last reply ` +
+                     arow[8]+`</span> </div>`;
+            }
+
+            cntt += `</div><div><a href="#" onclick="let first = $('[id^=thread-head-]').length==0;$('[id^=thread-head]').attr('id','thread-head-`+arow[4] + `');updateReply(false,` + arow[4] + `,first); return false;"  ><i style="margin: 0.5vw 0.1vw;float:none; color: grey;" class="fas fa-reply fa-lg"></i> </a>`
+
+            if(arow[3]){
+                url = `'/channelmsg/` + arow[4] +`/delete'`;
+                cntt += `<a href="#" onclick=
+             "msgPost(`+ url +`,`+ arow[4] +
+             `);return false;"> <i style="margin: 0.5vw 0.1vw;float:none; color: grey;" class="fas fa-trash-alt fa-lg"></i> </a></div></div>`
+            } else {
+                cntt += '</div></div>'
+            }
+        });
+
+        $('#content').append(cntt);
+      });
+
+
+      if(at_bottom){
+        $('#content').scrollTop($('#content')[0].scrollHeight);
+      }
+      if(!once){
+        setTimeout('updateMsg(false)', 4000);
+      }
+  });
+}
+
+
+$( document ).ready(function(){
+    $.ajaxSetup({ cache: false });
+    $('#content').scrollTop($('#content')[0].scrollHeight);
+    updateMsg(false);
+})
+
+
+$('#send').submit(function() {
+        $.ajax({
+            type: 'POST',
+            url: '{% url 'workspaces:channel_message' channel.id %}',
+            data: { content: $("#id_content").val()},
+            dataType: 'json',
+            success: function(data){
+                console.log(data);
+            }
+        });
+        $("#id_content").val("");
+        updateMsg(true);
+        return false;
+});
+
+function post(e) {
+        let id = parseInt($("[id^=thread-head-]").attr('id').replace("thread-head-",""));
+        let url = '/reply/'+id;
+
+        $.ajax({
+            type: 'POST',
+            url:  url,
+            cache:false,
+            data: { content: $("#reply_content").val()},
+            dataType: 'json',
+            success: function(data){
+                console.log(data);
+            }
+        });
+        $("#reply_content").val("");
+        updateReply(false,id,false);
+        return false;
+}
+
+function msgPost(url, msg_id) {
+    fetch(url, {
+        method: "POST", // *GET, POST, PUT, DELETE, etc.
+        mode: "cors", // no-cors, cors, *same-origin
+        cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: "same-origin", // include, *same-origin, omit
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+        },
+        redirect: "follow", // manual, *follow, error
+        referrer: "no-referrer", // no-referrer, *client
+    }).then(function(data) {
+        console.log(url, 'finished');
+        updateMsg(true);
+    }).catch(function() {
+        console.log(url, 'error');
+    })
+}
+
+function replyPost(url, msg_id) {
+    fetch(url, {
+        method: "POST", // *GET, POST, PUT, DELETE, etc.
+        mode: "cors", // no-cors, cors, *same-origin
+        cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: "same-origin", // include, *same-origin, omit
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+        },
+        redirect: "follow", // manual, *follow, error
+        referrer: "no-referrer", // no-referrer, *client
+    }).then(function(data) {
+        console.log(url, 'finished');
+        updateReply(true,msg_id,false);
+    }).catch(function() {
+        console.log(url, 'error');
+    })
+}
+
+
+
+{% endblock %}

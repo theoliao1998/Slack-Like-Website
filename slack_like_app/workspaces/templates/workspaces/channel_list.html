@@ -12,14 +12,14 @@
 <ul>
   {% for channel in channel_list_belong %}
     <li class="check">
-        # <a style="text-decoration: none; color: white;" href="">{{ channel.name }}</a>
+        # <a style="text-decoration: none; color: white;" href="{% url 'workspaces:channel' channel.id %}">{{ channel.name }}</a>
         </p>
     </li>
   {% endfor %}
 </ul>
 </div>
 
-<div><div class="check"><a style="text-decoration: none; color: white;" href=""> Members <i class="fas fa-plus-circle"></i> </a></div>
+<div><div class="check"><a style="text-decoration: none; color: white;" href="{% url 'workspaces:workspace_members' workspace.id %}"> Members <i class="fas fa-plus-circle"></i> </a></div>
 
 <ul>
     {% for member in members %}
@@ -30,7 +30,7 @@
   {% endfor %}
     {% if more %}
         <li class="check">&#x25cb; ...
-        <a style="text-decoration: none; color: white; font-style: italic; float:right; font-size:80%;" href="">More</a>
+        <a style="text-decoration: none; color: white; font-style: italic; float:right; font-size:80%;" href="{% url 'workspaces:workspace_members' workspace.id %}">More</a>
         </p>
     </li>
     {% endif %}
@@ -53,7 +53,7 @@
     <div class="message">
         <div class="user-icon">{{ channel.name|slice:":1" }}</div>
         <div class="message-content">
-            <div class="user-name"><strong>{{ channel.name }}</strong><span class="released-time"> Created on {{ channel.created_at | date:"d-m-Y"}}</span> </div>
+            <div class="user-name"><a href="{% url 'workspaces:channel' channel.id %}"><strong>{{ channel.name }}</strong></a><span class="released-time"> Created on {{ channel.created_at | date:"d-m-Y"}}</span> </div>
             <div>{{ channel.description }}</div>
         </div>
         <div>

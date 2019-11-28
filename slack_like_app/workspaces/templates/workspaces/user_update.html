@@ -12,6 +12,9 @@
                 </fieldset>
                 {% csrf_token %}
                 {{ form|crispy }}
+                <div id="div_id_content" class="form-group"> <label for="id_content" class="control-label ">
+                Profile
+            </label> <div class="controls "> <input type="text" value="{{ selected_one.profile.content }}" name="content" maxlength="255" class="textinput textInput form-control" id="id_content"> </div> </div>
                 <div class="form-group" id="submit">
                         <div>
                             <button type="submit" class="btn btn-primary btn-lg">Update</button>

@@ -7,14 +7,14 @@
 <ul>
   {% for channel in channel_list_belong %}
     <li class="check">
-        # <a style="text-decoration: none; color: white;" href="">{{ channel.name }}</a>
+        # <a style="text-decoration: none; color: white;" href="{% url 'workspaces:channel' channel.id %}">{{ channel.name }}</a>
         </p>
     </li>
   {% endfor %}
 </ul>
 </div>
 
-<div><div class="check"><a style="text-decoration: none; color: white;" href=""> Members <i class="fas fa-plus-circle"></i> </a></div>
+<div><div class="check"><a style="text-decoration: none; color: white;" href="{% url 'workspaces:workspace_members' workspace.id %}"> Members <i class="fas fa-plus-circle"></i> </a></div>
 
 <ul>
     {% for member in members %}
@@ -32,7 +32,7 @@
   {% endfor %}
     {% if more %}
         <li class="check">&#x25cb; ...
-        <a style="text-decoration: none; color: white; font-style: italic; float:right; font-size:80%;" href="">More</a>
+        <a style="text-decoration: none; color: white; font-style: italic; float:right; font-size:80%;" href="{% url 'workspaces:workspace_members' workspace.id %}">More</a>
         </p>
     </li>
     {% endif %}
@@ -72,26 +72,38 @@
 <div id='create'>
 <div id = "thread-head" > User Profile of
 {{ selected_one.username }} <img style="width: 40px; float: right; margin:0 3vw;" src="{{ selected_one|gravatar:60 }}"/>
+<div class="released-time" style="font-size:80%;">
+                {% if selected_one.profile.is_online %}
+                 Currently online
+                {% else %}
+                 Last login at {{ selected_one.last_login|naturaltime }}
+                {% endif %}
+
             </div>
+</div>
 <br>
 <br>
 <table>
                   <tbody>
                     <tr>
-                        <th scope="row" class="rowhead first">User Name</th>
+                        <th scope="row" class="rowhead first">&nbsp;&nbsp;User Name</th>
                         <td class="first">{{ selected_one.username }}</td>
                     </tr>
                     <tr>
-                        <th scope="row" class="rowhead">First Name</th>
+                        <th scope="row" class="rowhead">&nbsp;&nbsp;First Name</th>
                         <td>{{ selected_one.first_name }}</td>
                     </tr>
                     <tr>
-                        <th scope="row" class="rowhead">Last Name</th>
+                        <th scope="row" class="rowhead">&nbsp;&nbsp;Last Name</th>
                         <td>{{ selected_one.last_name }}</td>
                     </tr>
                     <tr>
-                        <th scope="row" class="rowhead">Email Address&nbsp;&nbsp;</th>
+                        <th scope="row" class="rowhead">&nbsp;&nbsp;Email Address&nbsp;&nbsp;</th>
                         <td>{{ selected_one.email }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="rowhead">&nbsp;&nbsp;Profile&nbsp;&nbsp;</th>
+                        <td>{{ selected_one.profile.content }}</td>
                     </tr>
                   </tbody>
 </table>
@@ -138,7 +150,10 @@ $.ajaxSetup({
     }
 });
 
-function updateMsg() {
+
+
+function updateMsg(once) {
+    let at_bottom = $('#content')[0].scrollHeight - $('#content')[0].scrollTop - $('#content')[0].clientHeight < 1;
     $.getJSON('{% url 'workspaces:user_message_get' selected_one.id %}', function(rowz){
       $('#content').empty();
       for (var i = 0; i < rowz.length; i++) {
@@ -154,22 +169,27 @@ function updateMsg() {
             url = `'/usermsg/` + arow[4] +`/delete'`;
             cntt += `<div> <a href="#" onclick=
              "msgPost(`+ url +`,`+ arow[4] +
-             `);return false;"> <i style="margin: 0.5vw 0.1vw;float:none; color: grey;" class="fas fa-trash-alt fa-lg"></i> </a></div></div>`
+             `);return false;"> <i style="margin: 0.5vw 0.1vw;float:none; color: grey;" class="fas fa-trash-alt fa-lg"></i> </a></div></div>`;
         } else {
             cntt += '</div>'
         }
 
         $('#content').append(cntt);
       }
-      setTimeout(updateMsg, 4000);
+      if(at_bottom){
+        $('#content').scrollTop($('#content')[0].scrollHeight);
+      }
+      if(!once){
+        setTimeout('updateMsg(false)', 4000);
+      }
   });
 }
 
 
 $( document ).ready(function(){
     $.ajaxSetup({ cache: false });
-
     $('#content').scrollTop($('#content')[0].scrollHeight);
+    updateMsg(false);
 })
 
 $('#send').submit(function() {
@@ -183,7 +203,7 @@ $('#send').submit(function() {
             }
         });
         $("#id_content").val("");
-        updateMsg();
+        updateMsg(true);
         return false;
 });
 
@@ -200,11 +220,12 @@ function msgPost(url, msg_id) {
         referrer: "no-referrer", // no-referrer, *client
     }).then(function(data) {
         console.log(url, 'finished');
-        updateMsg();
+        updateMsg(true);
     }).catch(function() {
         console.log(url, 'error');
     })
 }
+
 
 
 

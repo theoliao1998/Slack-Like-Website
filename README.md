@@ -29,5 +29,6 @@ Currently building on https://theoliao.pythonanywhere.com/
 * Search box  
 * New message alarmer
 * Member online/offline alarmer
+* File sharing  
 * Learn Redis and try to improve the performance with the help of it  
 * ...

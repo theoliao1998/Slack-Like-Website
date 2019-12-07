@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.conf import settings
 from datetime import datetime, timedelta
 
+
 class Profile(models.Model):
     user = models.OneToOneField(User, related_name='profile', on_delete=models.CASCADE)
     is_online = models.BooleanField(default=False)
@@ -72,6 +73,7 @@ class DirectMessage(models.Model):
     content = models.CharField(max_length=255, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    unseen = models.BooleanField(default=True)
 
 
 

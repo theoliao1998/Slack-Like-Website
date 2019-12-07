@@ -22,6 +22,9 @@ from django.contrib.auth.decorators import login_required
 
 from workspaces.owner import OwnerListView, OwnerDetailView, OwnerCreateView, OwnerUpdateView, OwnerDeleteView
 
+def check_new_dmsg(members,user):
+    return [user.receiver.filter(user=member,unseen=True).count()>0 for member in members]
+
 @receiver(user_logged_in)
 def got_online(sender, user, request, **kwargs):
     if Profile.objects.filter(user=user):
@@ -482,6 +485,7 @@ class WorkspaceShareView(LoginRequiredMixin, View):
         workspace_list = Workspace.objects.filter(users__username=request.user)
         sharelink = get_object_or_404(Sharelink, addr=addr)
         if timezone.now() > sharelink.expired_at:
+            sharelink.delete()
             return HttpResponseNotFound("hello")
 
         workspace = sharelink.workspace
@@ -494,6 +498,7 @@ class WorkspaceShareView(LoginRequiredMixin, View):
     def post(self, request, pk=None, addr=None) :
         sharelink = get_object_or_404(Sharelink, addr=addr)
         if timezone.now() > sharelink.expired_at:
+            sharelink.delete()
             return HttpResponseNotFound("hello")
 
         workspace = sharelink.workspace

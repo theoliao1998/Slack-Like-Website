@@ -20,12 +20,20 @@
     {% for member in members %}
     {% if member == selected_one %}
     <li class="active">
-        &#x25cb; <a style="text-decoration: none; color: white;" href="{% url 'workspaces:workspace_user' workspace.id member.id %}">{{ member.username }}</a>
+        {% if member.profile.is_online %}
+        &#x25cf;
+        {% else %}
+        &#x25cb;
+        {% endif %} <a style="text-decoration: none; color: white;" href="{% url 'workspaces:workspace_user' workspace.id member.id %}">{{ member.username }}</a>
         </p>
     </li>
     {% else %}
     <li class="check">
-        &#x25cb; <a style="text-decoration: none; color: white;" href="{% url 'workspaces:workspace_user' workspace.id member.id %}">{{ member.username }}</a>
+        {% if member.profile.is_online %}
+        &#x25cf;
+        {% else %}
+        &#x25cb;
+        {% endif %} <a style="text-decoration: none; color: white;" href="{% url 'workspaces:workspace_user' workspace.id member.id %}">{{ member.username }}</a>
         </p>
     </li>
     {% endif %}
@@ -43,7 +51,12 @@
 {% block nav %}
 <a href="{% url 'workspaces:all' %}">Home</a>
 <a href="{% url 'workspaces:channel_all' workspace.id %}">{{ workspace.name }}</a>
-<a class="active" href="">&#x25cb; {{ selected_one.username }}</a>
+<a class="active" href="">
+        {% if selected_one.profile.is_online %}
+        &#x25cf;
+        {% else %}
+        &#x25cb;
+        {% endif %} {{ selected_one.username }}</a>
 {% endblock %}
 
 

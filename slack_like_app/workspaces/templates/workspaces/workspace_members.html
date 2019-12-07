@@ -38,7 +38,7 @@
 
 {% block right %}
 {% if user in workspace.users.all %}
-<div id = "thread-head"> Current valid sharelinks for Workspace1</div>
+<div id = "thread-head"> Current valid sharelinks for workspace {{ workspace }}</div>
     <div style="overflow:scroll; max-height:68vh; overflow-x:hidden">
     {% for s in sharelinks %}
               <div style="word-break: break-all;white-space: normal;">&#11044; <span style="color: blue; font-style: italic;">https://theoliao.pythonanywhere.com/workspace/{{ workspace.id }}/sharelink/{{ s.addr }}</span>

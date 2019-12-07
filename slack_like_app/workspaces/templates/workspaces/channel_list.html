@@ -24,7 +24,12 @@
 <ul>
     {% for member in members %}
     <li class="check">
-        &#x25cb; <a style="text-decoration: none; color: white;" href="{% url 'workspaces:workspace_user' workspace.id member.id %}">{{ member.username }}</a>
+        {% if member.profile.is_online %}
+        &#x25cf;
+        {% else %}
+        &#x25cb;
+        {% endif %}
+         <a style="text-decoration: none; color: white;" href="{% url 'workspaces:workspace_user' workspace.id member.id %}">{{ member.username }}</a>
         </p>
     </li>
   {% endfor %}

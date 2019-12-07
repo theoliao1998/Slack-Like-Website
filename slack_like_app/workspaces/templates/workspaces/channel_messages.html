@@ -10,7 +10,7 @@
     {% else %}
     <li class="check">
     {% endif %}
-        # <a style="text-decoration: none; color: white;" href="">{{ c.name }}</a>
+        # <a style="text-decoration: none; color: white;" href="{% url 'workspaces:channel' c.id %}">{{ c.name }}</a>
         </p>
     </li>
   {% endfor %}
@@ -22,7 +22,12 @@
 <ul>
     {% for member in members %}
     <li class="check">
-        &#x25cb; <a style="text-decoration: none; color: white;" href="{% url 'workspaces:workspace_user' workspace.id member.id %}">{{ member.username }}</a>
+        {% if member.profile.is_online %}
+        &#x25cf;
+        {% else %}
+        &#x25cb;
+        {% endif %}
+        <a style="text-decoration: none; color: white;" href="{% url 'workspaces:workspace_user' workspace.id member.id %}">{{ member.username }}</a>
         </p>
     </li>
   {% endfor %}
@@ -164,7 +169,7 @@ function updateReply(once,msg_id, first) {
     }
 
     $.getJSON('/channelmsg/'+msg_id+'/reply', function(rowz){
-        console.log(rowz);
+        //console.log(rowz);
         $('#before').empty();
         $('#before').append('<div style="font-size:130%;" id = "' +
         ("thread-head-"+msg_id) +'" >Thread </div>');
@@ -276,7 +281,7 @@ $('#send').submit(function() {
             success: function(data){
                 console.log(data);
             }
-        });
+        })
         $("#id_content").val("");
         updateMsg(true);
         return false;

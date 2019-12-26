@@ -30,5 +30,5 @@ Currently building on https://theoliao.pythonanywhere.com/
 * New message alarmer
 * Member online/offline alarmer
 * File sharing  
-* Learn Redis and try to improve the performance with the help of it  
-* ...
+* Use React instead of basic JS for timely updating  
+* Use React-infinite-scroll for pagination

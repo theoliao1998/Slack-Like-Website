@@ -31,4 +31,5 @@ Currently building on https://theoliao.pythonanywhere.com/
 * Member online/offline alarmer
 * File sharing  
 * Use React instead of basic JS for timely updating  
-* Use React-infinite-scroll for pagination
+* Use React-infinite-scroll for pagination  
+* ...

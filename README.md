@@ -24,11 +24,4 @@ Build a slack-like live-chatting workspace webapp with Django.
 * Edit/delete workspaces/channels/messages
 ...
 
-### To do
-* Search box  
-* New message alarmer
-* Member online/offline alarmer
-* File sharing  
-* Use React instead of basic JS for timely updating  
-* Use React-infinite-scroll for pagination  
-* ...
+
